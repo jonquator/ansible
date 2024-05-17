@@ -1,0 +1,7 @@
+---
+- name: Shut down machine
+  hosts: all
+
+  tasks:
+    - name: Reboot machine
+      win_command: shutdown /s
