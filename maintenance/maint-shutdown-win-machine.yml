@@ -3,5 +3,5 @@
   hosts: all
 
   tasks:
-    - name: Reboot machine
+    - name: Shut down machine
       win_command: shutdown /s
