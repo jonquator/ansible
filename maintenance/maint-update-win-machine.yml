@@ -1,5 +1,10 @@
 ---
-# Search, download and install Windows updates
-- name: Search, download and install Windows updates without installing them
-  win_updates:
-    state: installed
+- name: Reboot machine
+  hosts: all
+  become: true
+
+  tasks:
+    # Search, download and install Windows updates
+    - name: Search, download and install Windows updates without installing them
+      win_updates:
+         state: installed
