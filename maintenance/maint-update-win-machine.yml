@@ -5,6 +5,6 @@
 
   tasks:
     # Search, download and install Windows updates
-    - name: Search, download and install Windows updates without installing them
+    - name: Search, download and install Windows updates
       win_updates:
          state: installed
