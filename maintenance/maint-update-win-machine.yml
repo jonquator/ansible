@@ -1,5 +1,5 @@
 ---
-- name: Reboot machine
+- name: Update Windows PC
   hosts: all
   become: true
 
