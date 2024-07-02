@@ -8,4 +8,4 @@
     - name: Search, download and install Windows updates
       win_updates:
          state: installed
-      when: ansible.windows.win_ping == 'pong'
+      when: ansible.windows.win_ping
