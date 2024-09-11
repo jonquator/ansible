@@ -24,8 +24,8 @@
   tasks:
     - name: Send telegram notification
       telegram:
-        token: {{ telegram_bot_token }}
-        chat_id: {{ telegram_chat_id }}
+        token: "{{ telegram_bot_token }}"
+        chat_id: "{{ telegram_chat_id }}"
         msg: Host "{{ hostvars[item].inventory_hostname }}" >> "{{ hostvars[item].list_of_found_updates.found_update_count }}" updates found.
       with_items:
         -  "{{ groups[Puestos_Usuarios_Pruebas] }}"
