@@ -3,6 +3,7 @@
 ## Play 1   Search-only, return list of found updates (if any).
 ##############################################################################
 - hosts: all
+  become: true
   tasks:
     - name: Search-only, return list of found updates (if any).
       win_updates:
@@ -36,6 +37,7 @@
 #### Play 3    Install all security, critical, and rollup updates when install_updates is true
 ###############################################################################
 - hosts: all
+  become: true
   tasks:
     - name: Install all security, critical, and rollup updates
       win_updates:
