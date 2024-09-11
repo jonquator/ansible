@@ -2,9 +2,9 @@
 ##############################################################################
 ## Play 1   Search-only, return list of found updates (if any).
 ##############################################################################
-- hosts: Puestos_Usuarios_Pruebas
+- hosts: all
   tasks:
-   - name: Search-only, return list of found updates (if any).
+    - name: Search-only, return list of found updates (if any).
       win_updates:
         category_names:
           - SecurityUpdates
@@ -15,7 +15,6 @@
 
     - debug:
         var: list_of_found_updates
-
 
 ##############################################################################
 ### Play 2   Send info with telegram
@@ -36,7 +35,7 @@
 ##############################################################################
 #### Play 3    Install all security, critical, and rollup updates when install_updates is true
 ###############################################################################
-- hosts: Puestos_Usuarios_Pruebas
+- hosts: all
   tasks:
     - name: Install all security, critical, and rollup updates
       win_updates:
