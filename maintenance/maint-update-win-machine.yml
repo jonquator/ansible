@@ -49,6 +49,6 @@
           - SecurityUpdates
           - CriticalUpdates
           - UpdateRollups
-        reboot: yes
+        reboot: false
       when:
           - install_updates == 'true'
