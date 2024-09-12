@@ -24,10 +24,14 @@
   connection: local
   tasks:
     - name: Send telegram notification
-      telegram:
+      community.general.telegram:
         token: "{{ telegram_bot_token }}"
+      api_args:
         chat_id: "{{ telegram_chat_id }}"
-        msg: Host " {{ hostvars[inventory_hostname] }} " >> " {{ hostvars[inventory_hostname].list_of_found_updates.found_update_count }}.list_of_found_updates.found_update_count " updates found.
+        parse_mode: "markdown"
+        text: Host " {{ hostvars[inventory_hostname] }} " >> " {{ hostvars[inventory_hostname].list_of_found_updates.found_update_count }}.list_of_found_updates.found_update_count " updates found.
+        disable_web_page_preview: true
+        disable_notification: false
       with_items:
         -  "{{ groups[windows] }}"
       ignore_errors: yes
