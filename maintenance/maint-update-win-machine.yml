@@ -20,7 +20,7 @@
 ##############################################################################
 ### Play 2   Send info with telegram
 ##############################################################################
-- hosts: localhost
+- hosts: all
   connection: local
   tasks:
     - name: Send telegram notification
