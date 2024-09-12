@@ -29,7 +29,7 @@
         api_args:
           chat_id: "{{ telegram_chat_id }}"
           parse_mode: "markdown"
-          text: Host " {{ hostvars[inventory_hostname] }} " >> " {{ hostvars[inventory_hostname].list_of_found_updates.found_update_count }}.list_of_found_updates.found_update_count " updates found.
+          text: Host " {{ hostvars[item].inventory_hostname }} " >> " {{ hostvars[item].list_of_found_updates.found_update_count }} " updates found.
           disable_web_page_preview: true
           disable_notification: false
       with_items:
