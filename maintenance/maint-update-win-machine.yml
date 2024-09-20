@@ -45,6 +45,18 @@
       ignore_errors: yes
       ignore_unreachable: yes
 
+    - name: Send notification if host unreachable
+      community.general.telegram:
+        token: "{{ telegram_bot_token }}"
+        api_args:
+          chat_id: "{{ telegram_chat_id }}"
+          parse_mode: "plain"
+          text: Host "{{ hostvars[item].inventory_hostname }}" was unreachable.
+          disable_web_page_preview: true
+          disable_notification: false
+      when: "'' in [hostvars[item].list_of_found_updates.found_update_count for item in groups['windows']]"
+      ignore_errors: yes
+
     - name: Send summary notification if no updates found for any host
       community.general.telegram:
         token: "{{ telegram_bot_token }}"
