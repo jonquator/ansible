@@ -57,19 +57,19 @@
       with_items: "{{ groups['windows'] }}"
       when: hostvars[item].list_of_found_updates.found_update_count == ''
       ignore_errors: yes
-
-    - name: Send summary notification if no updates found for any host
-      community.general.telegram:
-        token: "{{ telegram_bot_token }}"
-        api_args:
-          chat_id: "{{ telegram_chat_id }}"
-          parse_mode: "plain"
-          text: "All hosts have been checked. No updates found."
-          disable_web_page_preview: true
-          disable_notification: false
-      when: "'0' in [hostvars[item].list_of_found_updates.found_update_count for item in groups['windows']]"
-      ignore_errors: yes
-
+#
+#    - name: Send summary notification if no updates found for any host
+#      community.general.telegram:
+#        token: "{{ telegram_bot_token }}"
+#        api_args:
+#          chat_id: "{{ telegram_chat_id }}"
+#          parse_mode: "plain"
+#          text: "All hosts have been checked. No updates found."
+#          disable_web_page_preview: true
+#          disable_notification: false
+#      when: "'0' in [hostvars[item].list_of_found_updates.found_update_count for item in groups['windows']]"
+#      ignore_errors: yes
+#
 ##############################################################################
 #### Play 3    Install updates when install_updates is true
 ##############################################################################
