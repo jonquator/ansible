@@ -35,6 +35,7 @@
       with_items:
         -  "{{ groups[windows] }}"
       ignore_errors: yes
+      ignore_unreachable: yes
 
 
 ##############################################################################
