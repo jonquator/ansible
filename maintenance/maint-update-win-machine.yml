@@ -54,7 +54,8 @@
           text: Host "{{ hostvars[item].inventory_hostname }}" was unreachable.
           disable_web_page_preview: true
           disable_notification: false
-      when: "'' in [hostvars[item].list_of_found_updates.found_update_count for item in groups['windows']]"
+      with_items: "{{ groups['windows'] }}"
+      when: hostvars[item].list_of_found_updates.found_update_count != ''
       ignore_errors: yes
 
     - name: Send summary notification if no updates found for any host
@@ -66,7 +67,8 @@
           text: "All hosts have been checked. No updates found."
           disable_web_page_preview: true
           disable_notification: false
-      when: "'0' in [hostvars[item].list_of_found_updates.found_update_count for item in groups['windows']]"
+      with_items: "{{ groups['windows'] }}"
+      when: [hostvars[item].list_of_found_updates.found_update_count == 0
       ignore_errors: yes
 
 ##############################################################################
