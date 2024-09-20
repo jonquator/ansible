@@ -4,8 +4,9 @@
 ##############################################################################
 - hosts: all
   become: true
+  gather_facts: no
   tasks:
-    - name: Search-only, return list of found updates (if any).
+    - name: Search for updates (Security, Critical, Rollups)
       win_updates:
         category_names:
           - SecurityUpdates
@@ -14,42 +15,86 @@
         state: searched
       register: list_of_found_updates
 
-    - debug:
+    - name: Show found updates (if any)
+      debug:
         var: list_of_found_updates
 
 ##############################################################################
-### Play 2   Send info with telegram
+### Play 2   Send update info to Telegram for each host
 ##############################################################################
 - hosts: localhost
   connection: local
+  gather_facts: no
+  vars:
+    telegram_message_template: |
+      Host "{{ inventory_hostname }}" has found "{{ list_of_found_updates.found_update_count }}" updates.
+
   tasks:
-    - name: Send telegram notification
+    - name: Prepare and send Telegram notification for each host
       community.general.telegram:
         token: "{{ telegram_bot_token }}"
         api_args:
           chat_id: "{{ telegram_chat_id }}"
           parse_mode: "plain"
-          text: 'Host "{{ hostvars[item].inventory_hostname }}" >> "{{ hostvars[item].list_of_found_updates.found_update_count }}" updates found.'
+          text: |
+            Host "{{ hostvars[item].inventory_hostname }}" found "{{ hostvars[item].list_of_found_updates.found_update_count }}" updates:
+            {% for update in hostvars[item].list_of_found_updates.updates %}
+              - {{ update.title }}
+            {% endfor %}
           disable_web_page_preview: true
           disable_notification: false
-      with_items:
-        -  "{{ groups[windows] }}"
+      with_items: "{{ groups['windows'] }}"
+      when: hostvars[item].list_of_found_updates.found_update_count > 0
       ignore_errors: yes
       ignore_unreachable: yes
 
+    - name: Send summary notification if no updates found for any host
+      community.general.telegram:
+        token: "{{ telegram_bot_token }}"
+        api_args:
+          chat_id: "{{ telegram_chat_id }}"
+          parse_mode: "plain"
+          text: "All hosts have been checked. No updates found."
+          disable_web_page_preview: true
+          disable_notification: false
+      when: "'0' in [hostvars[item].list_of_found_updates.found_update_count for item in groups['windows']]"
+      ignore_errors: yes
 
 ##############################################################################
-#### Play 3    Install all security, critical, and rollup updates when install_updates is true
-###############################################################################
+#### Play 3    Install updates when install_updates is true
+##############################################################################
 - hosts: all
   become: true
+  gather_facts: no
   tasks:
-    - name: Install all security, critical, and rollup updates
-      win_updates:
-        category_names:
-          - SecurityUpdates
-          - CriticalUpdates
-          - UpdateRollups
-        reboot: false
-      when:
-          - install_updates == 'true'
+    - block:
+        - name: Install all security, critical, and rollup updates
+          win_updates:
+            category_names:
+              - SecurityUpdates
+              - CriticalUpdates
+              - UpdateRollups
+            reboot: false  # No se reinicia automáticamente
+          register: updates_installed
+          when: install_updates == 'true'
+
+        - name: Check if updates were installed
+          debug:
+            var: updates_installed
+          when: install_updates == 'true'
+
+        - name: Notify if reboot is required for host
+          community.general.telegram:
+            token: "{{ telegram_bot_token }}"
+            api_args:
+              chat_id: "{{ telegram_chat_id }}"
+              parse_mode: "plain"
+              text: "Host '{{ inventory_hostname }}' requires a reboot to complete the updates."
+              disable_web_page_preview: true
+              disable_notification: false
+          when: updates_installed.reboot_required == true
+
+      rescue:
+        - name: Log failure if updates couldn't be installed
+          debug:
+            msg: "Failed to install updates on {{ inventory_hostname }}"
