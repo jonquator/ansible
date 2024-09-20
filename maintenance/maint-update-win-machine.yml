@@ -25,10 +25,7 @@
 - hosts: localhost
   connection: local
   gather_facts: no
-  vars:
-    telegram_message_template: |
-      Host "{{ inventory_hostname }}" has found "{{ list_of_found_updates.found_update_count }}" updates.
-
+  
   tasks:
     - name: Prepare and send Telegram notification for each host
       community.general.telegram:
@@ -37,7 +34,7 @@
           chat_id: "{{ telegram_chat_id }}"
           parse_mode: "plain"
           text: |
-            Host "{{ hostvars[item].inventory_hostname }}" found "{{ hostvars[item].list_of_found_updates.found_update_count }}" updates:
+            Host "{{ hostvars[item].inventory_hostname }}" found "{{ hostvars[item].list_of_found_updates.found_update_count }}" updates.
             {% for update in hostvars[item].list_of_found_updates.updates %}
               - {{ update.title }}
             {% endfor %}
