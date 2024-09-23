@@ -1,11 +1,8 @@
 ---
-##############################################################################
-## Play 1   Send lock session command to hosts.
-##############################################################################
-- hosts: all
-  become: true
+- name: Bloquear la sesión de usuarios en equipos Windows
+  hosts: all
   gather_facts: no
   tasks:
-    - name: Lock Desktop
+    - name: Bloquear la sesión del usuario actual en Windows
       win_command: rundll32.exe user32.dll, LockWorkStation
-      ignore_errors: yes  # Evitar que el playbook falle si ya está bloqueado
+      ignore_errors: yes
