@@ -7,4 +7,5 @@
   gather_facts: no
   tasks:
     - name: Lock Desktop
-      win_command: 'cmd.exe "Rundll32.exe user32.dll,LockWorkStation"'
+      win_command:
+        cmd: '"C:\Windows\System32\Rundll32.exe" "user32.dll,LockWorkStation"'
