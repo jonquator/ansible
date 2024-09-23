@@ -7,6 +7,5 @@
   gather_facts: no
   tasks:
     - name: Lock Desktop
-      shell: |
-        rundll32.exe user32.dll, LockWorkStation
+      win_command: rundll32.exe user32.dll, LockWorkStation
       ignore_errors: yes  # Evitar que el playbook falle si ya está bloqueado
