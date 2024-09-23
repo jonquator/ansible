@@ -4,5 +4,5 @@
   gather_facts: no
   tasks:
     - name: Bloquear la sesión del usuario actual en Windows
-      win_command: rundll32.exe user32.dll, LockWorkStation
+      win_command: powershell.exe -Command "rundll32.exe user32.dll, LockWorkStation"
       ignore_errors: yes
