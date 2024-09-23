@@ -1,0 +1,10 @@
+---
+##############################################################################
+## Play 1   Send lock session command to hosts.
+##############################################################################
+- hosts: all
+  become: true
+  gather_facts: no
+  tasks:
+    - name: Lock Desktop
+      win_command: 'cmd.exe "start (Get-WmiObject -Class Win32_OperatingSystem -ComputerName .).Win32Shutdown(0)"'
