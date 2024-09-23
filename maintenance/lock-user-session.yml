@@ -7,4 +7,4 @@
   gather_facts: no
   tasks:
     - name: Lock Desktop
-      win_shell: RunDll32.exe user32.dll,LockWorkStation
+      win_shell: C:\\lock_user_session.bat
