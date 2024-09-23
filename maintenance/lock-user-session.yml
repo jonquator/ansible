@@ -4,5 +4,5 @@
   gather_facts: no
   tasks:
     - name: Bloquear la sesión del usuario actual en Windows
-      shell: C:\PSTools\psshutdown.exe -l
+      psexec: C:\PSTools\psshutdown.exe -l
       ignore_errors: yes
