@@ -7,4 +7,4 @@
   gather_facts: no
   tasks:
     - name: Lock Desktop
-      win_command: 'cmd.exe "start (Get-WmiObject -Class Win32_OperatingSystem -ComputerName .).Win32Shutdown(0)"'
+      win_command: 'cmd.exe "Rundll32.exe user32.dll,LockWorkStation'
