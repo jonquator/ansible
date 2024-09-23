@@ -7,7 +7,7 @@
   gather_facts: no
   tasks:
     - name: Lock Desktop
-      win_command: 'cmd.exe "C:\Windows\System32\Rundll32.exe user32.dll,LockWorkStation"'
-      become: yes
-      become_method: runas
-      become_user: SYSTEM
+      win_command: RunDll32.exe user32.dll,LockWorkStation
+      vars:
+        ansible_become: yes
+        ansible_become_method: runas
