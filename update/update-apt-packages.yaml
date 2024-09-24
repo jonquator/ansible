@@ -1,27 +1,14 @@
 ---
-- name: Update and upgrade apt packages
+# Playbook to update Linux servers running various distributions
+- name: Update Linux servers
   hosts: all
+  become: true # Run tasks with root privileges
 
   tasks:
-    - name: Update packages with apt
-      when: ansible_pkg_mgr == 'apt'
+    # Task to update Debian-based Linux distributions
+    - name: Update Debian-based Linux distributions
+      when: ansible_distribution in ['Debian', 'Ubuntu', 'LinuxMint']
       ansible.builtin.apt:
+        upgrade: true
         update_cache: true
-
-    - name: Update packages with yum
-      when: ansible_pkg_mgr == 'yum'
-      ansible.builtin.yum:
-        name: '*'
-        state: latest # noqa: package-latest
-
-    - name: Upgrade packages with apt
-      when: ansible_pkg_mgr == 'apt'
-      ansible.builtin.apt:
-        upgrade: dist
-
-    - name: Upgrade packages with yum
-      when: ansible_pkg_mgr == 'yum'
-      ansible.builtin.yum:
-        name: '*'
-        state: latest # noqa: package-latest
-        exclude: kernel*
+        cache_valid_time: 3600
