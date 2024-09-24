@@ -1,14 +1,63 @@
 ---
-# Playbook to update Linux servers running various distributions
-- name: Update Linux servers
-  hosts: all
-  become: true # Run tasks with root privileges
+##############################################################################
+## Play 1   Actualizar servidores Linux y registrar el resultado
+##############################################################################
+- hosts: linux_servers  # Define un grupo de hosts en tu inventario
+  become: true
+  gather_facts: yes
+  tasks:
+    - name: Actualizar los paquetes en sistemas basados en Debian (apt)
+      apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_facts['os_family'] == "Debian"
+      register: debian_updates
+      ignore_errors: yes
+
+    - name: Actualizar los paquetes en sistemas basados en RedHat (yum/dnf)
+      yum:
+        name: '*'
+        state: latest
+      when: ansible_facts['os_family'] == "RedHat"
+      register: redhat_updates
+      ignore_errors: yes
+
+    - name: Mostrar resultado de la actualización de Debian
+      debug:
+        var: debian_updates
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Mostrar resultado de la actualización de RedHat
+      debug:
+        var: redhat_updates
+      when: ansible_facts['os_family'] == "RedHat"
+
+
+##############################################################################
+### Play 2   Enviar notificación a Telegram
+##############################################################################
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    telegram_message_template: |
+      Actualización realizada en el servidor {{ inventory_hostname }}.
+      {% if ansible_facts['os_family'] == "Debian" %}
+      Paquetes actualizados: {{ debian_updates.changed }}
+      {% elif ansible_facts['os_family'] == "RedHat" %}
+      Paquetes actualizados: {{ redhat_updates.changed }}
+      {% else %}
+      Sistema operativo no soportado.
+      {% endif %}
 
   tasks:
-    # Task to update Debian-based Linux distributions
-    - name: Update Debian-based Linux distributions
-      when: ansible_distribution in ['Debian', 'Ubuntu', 'LinuxMint']
-      ansible.builtin.apt:
-        upgrade: true
-        update_cache: true
-        cache_valid_time: 3600
+    - name: Enviar notificación a Telegram
+      community.general.telegram:
+        token: "{{ telegram_bot_token }}"
+        api_args:
+          chat_id: "{{ telegram_chat_id }}"
+          parse_mode: "Markdown"
+          text: "{{ telegram_message_template }}"
+      with_items: "{{ groups['linux_servers'] }}"
+      ignore_errors: yes
+      ignore_unreachable: yes
