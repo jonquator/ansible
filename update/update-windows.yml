@@ -7,4 +7,4 @@
           - SecurityUpdates
           - CriticalUpdates
           - UpdateRollups
-        reboot: no
+        reboot: yes
