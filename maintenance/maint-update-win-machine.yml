@@ -2,8 +2,7 @@
 ##############################################################################
 ## Play 1   Search-only, return list of found updates (if any).
 ##############################################################################
-- hosts: all
-  become: true
+- hosts: windows
   gather_facts: no
   tasks:
     - name: Search for updates (Security, Critical, Rollups)
@@ -73,7 +72,7 @@
 ##############################################################################
 #### Play 3    Install updates when install_updates is true
 ##############################################################################
-- hosts: all
+- hosts: windows
   become: true
   gather_facts: no
   tasks:
