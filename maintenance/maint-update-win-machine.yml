@@ -3,7 +3,6 @@
 ## Play 1   Search-only, return list of found updates (if any).
 ##############################################################################
 - hosts: windows
-  gather_facts: no
   tasks:
     - name: Search for updates (Security, Critical, Rollups)
       win_updates:
@@ -23,7 +22,6 @@
 ##############################################################################
 - hosts: localhost
   connection: local
-  gather_facts: no
   
   tasks:
     - name: Prepare and send Telegram notification for each host
@@ -73,8 +71,6 @@
 #### Play 3    Install updates when install_updates is true
 ##############################################################################
 - hosts: windows
-  become: true
-  gather_facts: no
   tasks:
     - block:
         - name: Install all security, critical, and rollup updates
